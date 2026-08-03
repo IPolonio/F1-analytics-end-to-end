@@ -1,0 +1,10 @@
+[project]
+name = "f1-analytics"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.14"
+dependencies = [
+    "apache-airflow==3.3.0",
+    "apache-airflow-providers-postgres>=7.0.0",
+    "pandas>=3.0.5",
+]

@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Virtualenv
+.venv/
+
+# Airflow
+airflow/airflow.db*
+airflow/logs/
+airflow/simple_auth_manager_passwords.json.generated
+
+# OS / editors
+.DS_Store
+*.swp
+.idea/
+.vscode/

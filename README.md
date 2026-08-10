@@ -19,7 +19,7 @@ Raw F1 data is scattered across the OpenF1 API, which is session-oriented and ra
 ## Architecture
 
 ```
-OpenF1 API ──> Airflow DAGs ──> PostgreSQL (raw schema) ──> dbt ──> PostgreSQL (staging + marts schemas)
+OpenF1 API ──> Airflow DAGs ──> PostgreSQL (raw schema) ──> dbt ──> PostgreSQL (staging + drivers_gold schemas)
                   │                                           │
                   └─ retries + rate-limit handling            └─ tests, docs, lineage
 ```
@@ -32,14 +32,16 @@ OpenF1 API ──> Airflow DAGs ──> PostgreSQL (raw schema) ──> dbt ─�
 
 ## Current scope
 
-Two ingestion DAGs are implemented (both write to the `raw` schema, replacing table contents on each run):
+The `raw` schema holds four OpenF1 tables (replaced on each run):
 
-| DAG | Source endpoint | Destination table | Content |
-|---|---|---|---|
-| `f1_meetings_ingestion` | `/v1/meetings?year=2025` | `raw.meetings_raw` | Race weekend metadata (circuit, dates, official names) |
-| `f1_weather_ingestion` | `/v1/weather` per 2025 session | `raw.weather_raw` | Weather conditions per session (air temp, track temp, humidity, wind, rainfall) |
+| Raw table | Source endpoint | Content |
+|---|---|---|
+| `raw.meetings_raw` | `/v1/meetings?year=2025` | Race weekend metadata (circuit, dates, official names) |
+| `raw.sessions_raw` | `/v1/sessions?year=2025` | Session metadata (type, dates, circuit, meeting reference) |
+| `raw.drivers_raw` | `/v1/drivers` | Driver registrations per session (identity, team, broadcast names) |
+| `raw.weather_raw` | `/v1/weather` per 2025 session | Weather conditions per session (air temp, track temp, humidity, wind, rainfall) |
 
-Driver performance analysis (lap times, position, telemetry, etc.) is the intended end use; the corresponding data feeds are not yet ingested.
+The repo ships two ingestion DAGs (`f1_meetings_ingestion`, `f1_weather_ingestion`); both write to the `raw` schema, replacing table contents on each run. Driver performance analysis (lap times, position, telemetry, etc.) is the intended end use; those data feeds are not yet ingested.
 
 ## dbt project
 
@@ -49,27 +51,55 @@ The dbt project lives in `dbt/` and models the raw tables into two layers:
 dbt/
 ├── dbt_project.yml          # project config (profiles, model paths, materializations)
 ├── profiles.yml             # Postgres connection (env-var driven; configure before first run)
+├── macros/
+│   └── generate_schema_name.sql  # keep configured schema names (no base-schema prefix)
 └── models/
     ├── sources.yml          # definitions of the raw schema tables
     ├── schema.yml           # tests + column docs for every model
     ├── staging/             # cleaned, typed views on the raw tables
     │   ├── stg_meetings.sql
+    │   ├── stg_sessions.sql
+    │   ├── stg_drivers.sql
     │   └── stg_weather.sql
     └── marts/               # analytical views for reporting / BI
         ├── dim_meetings.sql
+        ├── dim_sessions.sql
+        ├── dim_drivers.sql
         ├── fct_weather.sql
+        ├── fct_driver_sessions.sql
         └── rpt_weather_by_session.sql
 ```
 
 | Model | Schema | Purpose |
 |---|---|---|
 | `stg_meetings` | `staging` | Race weekend metadata with proper types (`meeting_key`, `date_start`, `year`) |
+| `stg_sessions` | `staging` | Session metadata with typed dates, typed against `meeting_key` |
+| `stg_drivers` | `staging` | Per-session driver registrations (identity, team, broadcast names) |
 | `stg_weather` | `staging` | Typed weather readings plus an `is_raining` flag |
-| `dim_meetings` | `marts` | Deduplicated dimension, one row per race weekend |
-| `fct_weather` | `marts` | Fact table, one row per weather observation |
-| `rpt_weather_by_session` | `marts` | Per-session weather summary (averages, min/max temps, rainfall share) |
+| `dim_meetings` | `drivers_gold` | Deduplicated dimension, one row per race weekend |
+| `dim_sessions` | `drivers_gold` | One row per session, enriched with meeting info |
+| `dim_drivers` | `drivers_gold` | Deduplicated driver dimension, one row per `driver_number` |
+| `fct_weather` | `drivers_gold` | Fact table, one row per weather observation |
+| `fct_driver_sessions` | `drivers_gold` | Driver appearances per session with team + meeting context |
+| `rpt_weather_by_session` | `drivers_gold` | Per-session weather summary (averages, min/max temps, rainfall share) |
 
-All models are materialized as **views**, so the marts always reflect the latest raw data.
+All models are materialized as **views**, so the marts always reflect the latest raw data. The `drivers_gold` schema is the analytics layer — ready to be queried in SQL or consumed by any BI tool. Example:
+
+```sql
+-- Which sessions had the hottest track conditions, and who was driving?
+select
+    s.circuit_short_name,
+    s.session_name,
+    w.avg_track_temperature,
+    f.driver_number,
+    f.full_name,
+    f.team_name
+from drivers_gold.rpt_weather_by_session w
+left join drivers_gold.fct_driver_sessions f on f.session_key = w.session_key
+left join drivers_gold.dim_sessions s on s.session_key = w.session_key
+order by w.avg_track_temperature desc
+limit 10;
+```
 
 ## Requirements
 
@@ -94,20 +124,23 @@ dbt connects to the same Postgres database. `dbt/profiles.yml` is a template dri
 
 ```sh
 # Validate the project and models
-dbt parse --project-dir dbt --profiles-dir dbt
+uv run dbt parse --project-dir dbt --profiles-dir dbt
 
-# Build the staging and marts views (creates staging + marts schemas)
-dbt build --project-dir dbt --profiles-dir dbt
+# Build the staging and analytical views (creates the staging + drivers_gold schemas)
+uv run dbt build --project-dir dbt --profiles-dir dbt
 
 # Run data quality tests only
-dbt test --project-dir dbt --profiles-dir dbt
+uv run dbt test --project-dir dbt --profiles-dir dbt
+
+# Connection sanity check
+uv run dbt debug --project-dir dbt --profiles-dir dbt
 ```
 
 Run Airflow first so the `raw` tables exist, then build the dbt models on top.
 
 ## Roadmap
 
-- Ingest driver, session, and lap-time data from the OpenF1 API.
-- Add sessions and drivers as staging/dimension models once those feeds land.
-- Model driver performance across sessions, teams, and conditions.
+- Ingest lap-time and telemetry data from the OpenF1 API.
+- Model driver performance across sessions, teams, and conditions on top of the existing dimensions/facts.
+- Add row-level lineage via dbt docs (`uv run dbt docs generate && uv run dbt docs serve`).
 - Schedule dbt runs from Airflow instead of the CLI.

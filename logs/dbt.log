@@ -1,0 +1,84 @@
+[0m23:48:13.731714 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x70bfec517230>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x70bfee200f50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x70bfeac2f9d0>]}
+
+
+============================== 23:48:13.745683 | 16886f09-f489-4f66-9a5b-e6eb960f9aa1 ==============================
+[0m23:48:13.745683 [info ] [MainThread]: Running with dbt=1.12.0
+[0m23:48:13.746578 [debug] [MainThread]: running dbt with arguments {'static_parser': 'True', 'partial_parse': 'True', 'introspect': 'True', 'cache_selected_only': 'False', 'version_check': 'True', 'target_path': 'None', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'debug': 'False', 'fail_fast': 'False', 'hints_enabled': 'True', 'indirect_selection': 'eager', 'no_print': 'None', 'empty': 'None', 'log_cache_events': 'False', 'invocation_command': 'dbt debug --connection', 'printer_width': '80', 'use_experimental_parser': 'False', 'maximum_seed_size_mib': '1', 'write_json': 'True', 'use_colors': 'True', 'log_path': 'logs', 'profiles_dir': '/home/ipolonio/.dbt', 'warn_error': 'None', 'log_format': 'default'}
+[0m23:48:14.082033 [info ] [MainThread]: dbt version: 1.12.0
+[0m23:48:14.082795 [info ] [MainThread]: python version: 3.14.5
+[0m23:48:14.083361 [info ] [MainThread]: python path: /mnt/c/Users/Isaac/Downloads/F1-Analytics/.venv/bin/python3
+[0m23:48:14.084018 [info ] [MainThread]: os info: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39
+[0m23:48:14.556066 [info ] [MainThread]: Using profiles dir at /home/ipolonio/.dbt
+[0m23:48:14.556914 [info ] [MainThread]: Using profiles.yml file at /home/ipolonio/.dbt/profiles.yml
+[0m23:48:14.557625 [info ] [MainThread]: Using dbt_project.yml file at /mnt/c/Users/Isaac/Downloads/F1-Analytics/dbt_project.yml
+[0m23:48:14.558312 [error] [MainThread]: [[31mERROR[0m]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m23:48:14.561081 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 0.92906517, "process_in_blocks": "18568", "process_kernel_time": 1.630206, "process_mem_max_rss": "127168", "process_out_blocks": "0", "process_user_time": 2.238816}
+[0m23:48:14.561795 [debug] [MainThread]: Command `dbt debug` failed at 23:48:14.561692 after 0.93 seconds
+[0m23:48:14.562317 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x70bfeaaef490>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x70bfeab639b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x70bfe9b7c490>]}
+[0m23:48:14.562896 [debug] [MainThread]: Flushing usage events
+[0m23:48:14.870313 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m23:48:51.591910 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x716349b87230>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x71634b840f50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x71634829f9d0>]}
+
+
+============================== 23:48:51.602563 | d77b718e-3ae1-4359-9188-30ec3d33a4ab ==============================
+[0m23:48:51.602563 [info ] [MainThread]: Running with dbt=1.12.0
+[0m23:48:51.603420 [debug] [MainThread]: running dbt with arguments {'indirect_selection': 'eager', 'warn_error': 'None', 'invocation_command': 'dbt debug --connection', 'no_print': 'None', 'empty': 'None', 'use_experimental_parser': 'False', 'maximum_seed_size_mib': '1', 'profiles_dir': '/home/ipolonio/.dbt', 'version_check': 'True', 'log_path': 'logs', 'log_cache_events': 'False', 'partial_parse': 'True', 'fail_fast': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'log_format': 'default', 'use_colors': 'True', 'debug': 'False', 'target_path': 'None', 'printer_width': '80', 'write_json': 'True', 'quiet': 'False', 'static_parser': 'True', 'hints_enabled': 'True', 'cache_selected_only': 'False', 'send_anonymous_usage_stats': 'True', 'introspect': 'True'}
+[0m23:48:51.841870 [info ] [MainThread]: dbt version: 1.12.0
+[0m23:48:51.842472 [info ] [MainThread]: python version: 3.14.5
+[0m23:48:51.843072 [info ] [MainThread]: python path: /mnt/c/Users/Isaac/Downloads/F1-Analytics/.venv/bin/python3
+[0m23:48:51.843680 [info ] [MainThread]: os info: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39
+[0m23:48:52.253086 [info ] [MainThread]: Using profiles dir at /home/ipolonio/.dbt
+[0m23:48:52.253893 [info ] [MainThread]: Using profiles.yml file at /home/ipolonio/.dbt/profiles.yml
+[0m23:48:52.254735 [info ] [MainThread]: Using dbt_project.yml file at /mnt/c/Users/Isaac/Downloads/F1-Analytics/dbt_project.yml
+[0m23:48:52.255668 [error] [MainThread]: [[31mERROR[0m]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m23:48:52.258800 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 0.751479, "process_in_blocks": "18280", "process_kernel_time": 1.456543, "process_mem_max_rss": "127172", "process_out_blocks": "0", "process_user_time": 1.890322}
+[0m23:48:52.259450 [debug] [MainThread]: Command `dbt debug` failed at 23:48:52.259349 after 0.75 seconds
+[0m23:48:52.259928 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x71634811f360>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7163481d39b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7163475985a0>]}
+[0m23:48:52.260410 [debug] [MainThread]: Flushing usage events
+[0m23:48:52.627841 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m23:50:33.380490 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x700c9ed17230>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x700ca0a00f50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x700c9d42f9d0>]}
+
+
+============================== 23:50:33.391985 | 971f1dc2-0ce7-4421-b50a-0aeb8df60a35 ==============================
+[0m23:50:33.391985 [info ] [MainThread]: Running with dbt=1.12.0
+[0m23:50:33.392845 [debug] [MainThread]: running dbt with arguments {'static_parser': 'True', 'profiles_dir': '/home/ipolonio/.dbt', 'send_anonymous_usage_stats': 'True', 'warn_error': 'None', 'indirect_selection': 'eager', 'write_json': 'True', 'target_path': 'None', 'empty': 'None', 'version_check': 'True', 'cache_selected_only': 'False', 'printer_width': '80', 'fail_fast': 'False', 'log_cache_events': 'False', 'debug': 'False', 'quiet': 'False', 'no_print': 'None', 'use_experimental_parser': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'log_path': 'logs', 'introspect': 'True', 'invocation_command': 'dbt debug --connection', 'use_colors': 'True', 'log_format': 'default', 'partial_parse': 'True', 'maximum_seed_size_mib': '1', 'hints_enabled': 'True'}
+[0m23:50:33.606831 [info ] [MainThread]: dbt version: 1.12.0
+[0m23:50:33.607441 [info ] [MainThread]: python version: 3.14.5
+[0m23:50:33.607964 [info ] [MainThread]: python path: /mnt/c/Users/Isaac/Downloads/F1-Analytics/.venv/bin/python3
+[0m23:50:33.608503 [info ] [MainThread]: os info: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39
+[0m23:50:34.026257 [info ] [MainThread]: Using profiles dir at /home/ipolonio/.dbt
+[0m23:50:34.027220 [info ] [MainThread]: Using profiles.yml file at /home/ipolonio/.dbt/profiles.yml
+[0m23:50:34.028187 [info ] [MainThread]: Using dbt_project.yml file at /mnt/c/Users/Isaac/Downloads/F1-Analytics/dbt_project.yml
+[0m23:50:34.028802 [error] [MainThread]: [[31mERROR[0m]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m23:50:34.032169 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 0.735505, "process_in_blocks": "18280", "process_kernel_time": 1.582695, "process_mem_max_rss": "126712", "process_out_blocks": "0", "process_user_time": 1.868459}
+[0m23:50:34.032988 [debug] [MainThread]: Command `dbt debug` failed at 23:50:34.032815 after 0.74 seconds
+[0m23:50:34.033755 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x700c9d2af360>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x700c9d3639b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x700c9c3785a0>]}
+[0m23:50:34.034420 [debug] [MainThread]: Flushing usage events
+[0m23:50:34.382684 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m23:51:44.914310 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7beca8c43230>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7becaa8f0f50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7beca735b9d0>]}
+
+
+============================== 23:51:44.926645 | 5f49e0ec-565b-4523-9f1d-de578dfcda49 ==============================
+[0m23:51:44.926645 [info ] [MainThread]: Running with dbt=1.12.0
+[0m23:51:44.927606 [debug] [MainThread]: running dbt with arguments {'debug': 'False', 'target_path': 'None', 'use_experimental_parser': 'False', 'indirect_selection': 'eager', 'quiet': 'False', 'fail_fast': 'False', 'hints_enabled': 'True', 'no_print': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'static_parser': 'True', 'log_format': 'default', 'cache_selected_only': 'False', 'use_colors': 'True', 'version_check': 'True', 'write_json': 'True', 'send_anonymous_usage_stats': 'True', 'log_cache_events': 'False', 'maximum_seed_size_mib': '1', 'partial_parse': 'True', 'introspect': 'True', 'invocation_command': 'dbt debug --connection', 'warn_error': 'None', 'printer_width': '80', 'log_path': 'logs', 'profiles_dir': '/home/ipolonio/.dbt', 'empty': 'None'}
+[0m23:51:45.201207 [info ] [MainThread]: dbt version: 1.12.0
+[0m23:51:45.201997 [info ] [MainThread]: python version: 3.14.5
+[0m23:51:45.202615 [info ] [MainThread]: python path: /mnt/c/Users/Isaac/Downloads/F1-Analytics/.venv/bin/python3
+[0m23:51:45.203246 [info ] [MainThread]: os info: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39
+[0m23:51:45.672451 [info ] [MainThread]: Using profiles dir at /home/ipolonio/.dbt
+[0m23:51:45.673382 [info ] [MainThread]: Using profiles.yml file at /home/ipolonio/.dbt/profiles.yml
+[0m23:51:45.674123 [info ] [MainThread]: Using dbt_project.yml file at /mnt/c/Users/Isaac/Downloads/F1-Analytics/dbt_project.yml
+[0m23:51:45.674738 [error] [MainThread]: [[31mERROR[0m]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m23:51:45.678050 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 0.8562373, "process_in_blocks": "18280", "process_kernel_time": 1.450439, "process_mem_max_rss": "127168", "process_out_blocks": "0", "process_user_time": 2.165209}
+[0m23:51:45.678804 [debug] [MainThread]: Command `dbt debug` failed at 23:51:45.678684 after 0.86 seconds
+[0m23:51:45.679441 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7beca71db360>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7beca728f9b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7beca68e45a0>]}
+[0m23:51:45.680013 [debug] [MainThread]: Flushing usage events
+[0m23:51:46.031325 [debug] [MainThread]: An error was encountered while trying to flush usage events

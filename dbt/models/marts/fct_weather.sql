@@ -4,6 +4,7 @@ with source as (
 
 select
     session_key,
+    meeting_key,
     recorded_at,
     air_temperature,
     track_temperature,

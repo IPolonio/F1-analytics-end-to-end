@@ -44,6 +44,8 @@ sources:
         columns:
           - name: session_key
             description: Unique identifier of the session the reading belongs to.
+          - name: meeting_key
+            description: Unique identifier of the race weekend the reading belongs to.
           - name: date
             description: ISO datetime of the reading.
           - name: air_temperature
@@ -60,6 +62,80 @@ sources:
             description: Wind direction in degrees.
           - name: wind_speed
             description: Wind speed in km/h.
+          - name: source
+            description: Ingestion source tag.
+          - name: ingestion_time
+            description: Timestamp the row was ingested.
+
+      - name: sessions_raw
+        description: >
+          Session metadata from the OpenF1 `/v1/sessions` endpoint
+          (session type/name, dates, circuit, meeting reference).
+        columns:
+          - name: session_key
+            description: Unique identifier of the session.
+          - name: session_type
+            description: Type of session (Practice, Qualifying, Race, ...).
+          - name: session_name
+            description: Display name of the session.
+          - name: date_start
+            description: ISO datetime the session starts.
+          - name: date_end
+            description: ISO datetime the session ends.
+          - name: meeting_key
+            description: Unique identifier of the race weekend.
+          - name: circuit_key
+            description: Unique identifier of the circuit.
+          - name: circuit_short_name
+            description: Short circuit name.
+          - name: country_key
+            description: Unique identifier of the country.
+          - name: country_code
+            description: ISO country code.
+          - name: country_name
+            description: Country name.
+          - name: location
+            description: City/location of the circuit.
+          - name: gmt_offset
+            description: Timezone offset of the session.
+          - name: year
+            description: Championship year.
+          - name: is_cancelled
+            description: Whether the session was cancelled.
+          - name: source
+            description: Ingestion source tag.
+          - name: ingestion_time
+            description: Timestamp the row was ingested.
+
+      - name: drivers_raw
+        description: >
+          Driver registration info per session from the OpenF1 `/v1/drivers`
+          endpoint (identity, team, broadcast names).
+        columns:
+          - name: meeting_key
+            description: Unique identifier of the race weekend.
+          - name: session_key
+            description: Unique identifier of the session.
+          - name: driver_number
+            description: Race number of the driver.
+          - name: broadcast_name
+            description: Name as shown on broadcast overlays.
+          - name: full_name
+            description: Full name of the driver.
+          - name: name_acronym
+            description: Three-letter acronym for the driver.
+          - name: team_name
+            description: Name of the team the driver raced for.
+          - name: team_colour
+            description: Hex colour of the team.
+          - name: first_name
+            description: First name of the driver.
+          - name: last_name
+            description: Last name of the driver.
+          - name: headshot_url
+            description: URL of the driver headshot.
+          - name: country_code
+            description: Nationality country code.
           - name: source
             description: Ingestion source tag.
           - name: ingestion_time

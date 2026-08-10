@@ -24,6 +24,27 @@ models:
         tests:
           - not_null
 
+  - name: stg_sessions
+    description: Cleaned and typed session metadata from `raw.sessions_raw`.
+    columns:
+      - name: session_key
+        tests:
+          - unique
+          - not_null
+      - name: meeting_key
+        tests:
+          - not_null
+
+  - name: stg_drivers
+    description: Cleaned driver registrations per session from `raw.drivers_raw`.
+    columns:
+      - name: session_key
+        tests:
+          - not_null
+      - name: driver_number
+        tests:
+          - not_null
+
   - name: dim_meetings
     description: >
       Analytical dimension of race weekends, deduplicated by `meeting_key`
@@ -50,6 +71,44 @@ models:
         tests:
           - not_null
       - name: recorded_at
+        tests:
+          - not_null
+
+  - name: dim_sessions
+    description: >
+      Analytical dimension of sessions, one row per `session_key`, enriched
+      with race weekend information from the meetings dimension.
+    columns:
+      - name: session_key
+        tests:
+          - unique
+          - not_null
+      - name: meeting_key
+        tests:
+          - not_null
+
+  - name: dim_drivers
+    description: >
+      Analytical dimension of drivers, deduplicated by `driver_number` with
+      one row per driver.
+    columns:
+      - name: driver_number
+        tests:
+          - unique
+          - not_null
+      - name: full_name
+        tests:
+          - not_null
+
+  - name: fct_driver_sessions
+    description: >
+      Driver appearances per session with team and session/meeting context.
+      One row per driver registered in a session.
+    columns:
+      - name: session_key
+        tests:
+          - not_null
+      - name: driver_number
         tests:
           - not_null
 

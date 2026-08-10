@@ -5,6 +5,7 @@ with source as (
 renamed as (
     select
         session_key::bigint as session_key,
+        meeting_key::bigint as meeting_key,
         date::timestamp as recorded_at,
         air_temperature::numeric as air_temperature,
         track_temperature::numeric as track_temperature,

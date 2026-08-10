@@ -140,3 +140,24 @@ sources:
             description: Ingestion source tag.
           - name: ingestion_time
             description: Timestamp the row was ingested.
+
+      - name: positions_raw
+        description: >
+          Running position per driver per lap from the OpenF1 `/v1/position`
+          endpoint. The final reading per driver in a race session gives the
+          race result.
+        columns:
+          - name: date
+            description: ISO datetime of the position reading.
+          - name: session_key
+            description: Unique identifier of the session.
+          - name: meeting_key
+            description: Unique identifier of the race weekend.
+          - name: driver_number
+            description: Race number of the driver.
+          - name: position
+            description: Running position of the driver at that time.
+          - name: source
+            description: Ingestion source tag.
+          - name: ingestion_time
+            description: Timestamp the row was ingested.

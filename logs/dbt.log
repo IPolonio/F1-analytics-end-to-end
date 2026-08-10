@@ -82,3 +82,19 @@ Internal Error
 [0m23:51:45.679441 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7beca71db360>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7beca728f9b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7beca68e45a0>]}
 [0m23:51:45.680013 [debug] [MainThread]: Flushing usage events
 [0m23:51:46.031325 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m01:00:01.420985 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1ff9f07230>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1ffbbccf50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1ff84779d0>]}
+
+
+============================== 01:00:01.439761 | a43a4260-ee5c-44c6-b94e-88ec9bbcef9a ==============================
+[0m01:00:01.439761 [info ] [MainThread]: Running with dbt=1.12.0
+[0m01:00:01.441030 [debug] [MainThread]: running dbt with arguments {'log_path': 'logs', 'send_anonymous_usage_stats': 'True', 'partial_parse': 'True', 'debug': 'False', 'maximum_seed_size_mib': '1', 'printer_width': '80', 'target_path': 'None', 'quiet': 'False', 'no_print': 'None', 'invocation_command': 'dbt run', 'indirect_selection': 'eager', 'static_parser': 'True', 'version_check': 'True', 'empty': 'False', 'profiles_dir': '/home/ipolonio/.dbt', 'fail_fast': 'False', 'introspect': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'write_json': 'True', 'log_cache_events': 'False', 'use_experimental_parser': 'False', 'cache_selected_only': 'False', 'hints_enabled': 'True', 'log_format': 'default', 'use_colors': 'True', 'warn_error': 'None'}
+[0m01:00:01.442357 [error] [MainThread]: [[31mERROR[0m]: Encountered an error:
+Runtime Error
+  No dbt_project.yml found at expected path /mnt/c/Users/Isaac/Downloads/F1-Analytics/dbt_project.yml
+  Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
+  
+[0m01:00:01.445920 [debug] [MainThread]: Resource report: {"command_name": "run", "command_success": false, "command_wall_clock_time": 0.11262925, "process_in_blocks": "2032", "process_kernel_time": 1.45565, "process_mem_max_rss": "122468", "process_out_blocks": "0", "process_user_time": 2.300447}
+[0m01:00:01.446744 [debug] [MainThread]: Command `dbt run` failed at 01:00:01.446631 after 0.11 seconds
+[0m01:00:01.447395 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1ff8624b00>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1ff860e9f0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1ff8487680>]}
+[0m01:00:01.448058 [debug] [MainThread]: Flushing usage events
+[0m01:00:01.908568 [debug] [MainThread]: An error was encountered while trying to flush usage events

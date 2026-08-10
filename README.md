@@ -40,8 +40,9 @@ The `raw` schema holds four OpenF1 tables (replaced on each run):
 | `raw.sessions_raw` | `/v1/sessions?year=2025` | Session metadata (type, dates, circuit, meeting reference) |
 | `raw.drivers_raw` | `/v1/drivers` | Driver registrations per session (identity, team, broadcast names) |
 | `raw.weather_raw` | `/v1/weather` per 2025 session | Weather conditions per session (air temp, track temp, humidity, wind, rainfall) |
+| `raw.positions_raw` | `/v1/position` per 2025 session | Running position per driver per lap — final reading gives the race result |
 
-The repo ships two ingestion DAGs (`f1_meetings_ingestion`, `f1_weather_ingestion`); both write to the `raw` schema, replacing table contents on each run. Driver performance analysis (lap times, position, telemetry, etc.) is the intended end use; those data feeds are not yet ingested.
+The repo ships three ingestion DAGs (`f1_meetings_ingestion`, `f1_weather_ingestion`, `f1_positions_ingestion`); they write to the `raw` schema, replacing table contents on each run. Driver performance analysis (lap times, telemetry, etc.) is the intended end use; those data feeds are not yet ingested.
 
 ## dbt project
 
@@ -60,14 +61,16 @@ dbt/
     │   ├── stg_meetings.sql
     │   ├── stg_sessions.sql
     │   ├── stg_drivers.sql
-    │   └── stg_weather.sql
+    │   ├── stg_weather.sql
+    │   └── stg_positions.sql
     └── marts/               # analytical views for reporting / BI
         ├── dim_meetings.sql
         ├── dim_sessions.sql
         ├── dim_drivers.sql
         ├── fct_weather.sql
         ├── fct_driver_sessions.sql
-        └── rpt_weather_by_session.sql
+        ├── rpt_weather_by_session.sql
+        └── rpt_race_results.sql
 ```
 
 | Model | Schema | Purpose |
@@ -76,14 +79,29 @@ dbt/
 | `stg_sessions` | `staging` | Session metadata with typed dates, typed against `meeting_key` |
 | `stg_drivers` | `staging` | Per-session driver registrations (identity, team, broadcast names) |
 | `stg_weather` | `staging` | Typed weather readings plus an `is_raining` flag |
+| `stg_positions` | `staging` | Typed running-position readings per driver per lap |
 | `dim_meetings` | `drivers_gold` | Deduplicated dimension, one row per race weekend |
 | `dim_sessions` | `drivers_gold` | One row per session, enriched with meeting info |
 | `dim_drivers` | `drivers_gold` | Deduplicated driver dimension, one row per `driver_number` |
 | `fct_weather` | `drivers_gold` | Fact table, one row per weather observation |
 | `fct_driver_sessions` | `drivers_gold` | Driver appearances per session with team + meeting context |
 | `rpt_weather_by_session` | `drivers_gold` | Per-session weather summary (averages, min/max temps, rainfall share) |
+| `rpt_race_results` | `drivers_gold` | Final position per driver per session — `final_position = 1` is the winner |
 
-All models are materialized as **views**, so the marts always reflect the latest raw data. The `drivers_gold` schema is the analytics layer — ready to be queried in SQL or consumed by any BI tool. Example:
+All models are materialized as **views**, so the marts always reflect the latest raw data. The `drivers_gold` schema is the analytics layer — ready to be queried in SQL or consumed by any BI tool. Examples:
+
+```sql
+-- Who won each race?
+select s.circuit_short_name, d.full_name
+from drivers_gold.rpt_race_results r
+join drivers_gold.dim_sessions s using (session_key)
+join drivers_gold.dim_drivers d using (driver_number)
+where r.final_position = 1
+  and s.session_type = 'Race'
+order by r.session_key;
+```
+
+`rpt_race_results` covers all session types (Practice, Qualifying, Sprint, Race) — filter `session_type = 'Race'` (or `'Sprint'`) for results of that session kind.
 
 ```sql
 -- Which sessions had the hottest track conditions, and who was driving?
@@ -101,6 +119,61 @@ order by w.avg_track_temperature desc
 limit 10;
 ```
 
+## Data dictionary
+
+### Naming conventions
+
+dbt model names use prefixes that tell you what a model is:
+
+| Prefix | Meaning | Layer |
+|---|---|---|
+| `stg_` | **staging** — cleaned, typed, filtered view directly over a `raw` table | `staging` |
+| `dim_` | **dimension** — reference/descriptive data, one row per entity (meeting, session, driver) | `drivers_gold` |
+| `fct_` | **fact** — measurable events/observations (weather readings, driver appearances) | `drivers_gold` |
+| `rpt_` | **report** — pre-aggregated analytical view for direct consumption | `drivers_gold` |
+
+### Entities
+
+- **Meeting** — a race weekend (e.g. "Dutch Grand Prix"). Identified by `meeting_key`; carries the circuit, country, dates, and year.
+- **Session** — a single track activity inside a meeting: `Practice`, `Qualifying`, `Sprint`, `Race`. Identified by `session_key` and described by `session_type`/`session_name`.
+- **Driver** — a competitor. Identified by `driver_number` (race number); described by `full_name`, `name_acronym`, and `country_code`. Teams are per-session (`team_name`, `team_colour` in `fct_driver_sessions`).
+- **Weather reading** — an observation (`recorded_at`) of a session's conditions: air/track temperature (°C), humidity (%), pressure (hPa), wind speed (km/h) and direction (°), rainfall (0/1 → `is_raining`).
+- **Position** — a driver's running position at a point in time; the final reading per driver in a session is the result (`final_position`, where `1` = winner).
+
+### Raw tables (`raw` schema)
+
+| Table | What each row is |
+|---|---|
+| `meetings_raw` | One row per race weekend |
+| `sessions_raw` | One row per session (practice/quali/sprint/race) |
+| `drivers_raw` | One row per driver registration in a session |
+| `weather_raw` | One row per weather observation |
+| `positions_raw` | One row per running-position reading per driver |
+
+### Gold views (`drivers_gold` schema)
+
+| View | Granularity | Use for |
+|---|---|---|
+| `dim_meetings` | 1 row / meeting | Meeting attributes, deduped |
+| `dim_sessions` | 1 row / session | Session attributes + meeting name/circuit context |
+| `dim_drivers` | 1 row / driver | Driver identity (name, acronym, nationality) |
+| `fct_weather` | 1 row / weather observation | Raw conditions per timestamp |
+| `fct_driver_sessions` | 1 row / driver in a session | Who raced where, and for which team |
+| `rpt_weather_by_session` | 1 row / session | Session-level weather summary (averages, min/max, rain share) |
+| `rpt_race_results` | 1 row / driver per session | Final positions; race winners at `final_position = 1` |
+
+### Key fields
+
+| Field | Meaning |
+|---|---|
+| `meeting_key` | Unique id of a race weekend |
+| `session_key` | Unique id of a session |
+| `driver_number` | Driver's race number (stable id) |
+| `final_position` | Position a driver finished a session in |
+| `is_raining` | True when a weather reading has `rainfall > 0` |
+| `recorded_at` | Timestamp of the observation/reading |
+| `ingestion_time` | When Airflow loaded the row |
+
 ## Requirements
 
 - Python 3.14 (managed with `uv`)
@@ -116,7 +189,16 @@ export AIRFLOW_HOME="$PWD/airflow"
 airflow standalone
 ```
 
-Register the Postgres connection and unpause the DAGs in the Airflow UI (DAGs are paused at creation by default). See `AGENTS.md` for full details on configuration and verification.
+**`AIRFLOW_HOME` must point at this repo's `airflow/` dir** — without it Airflow silently falls back to `~/airflow/` (different DB, different dags, different login password). First start: log in as `admin` with the password in `airflow/simple_auth_manager_passwords.json.generated`, then register the Postgres connection and unpause the DAGs (DAGs are paused at creation by default):
+
+```sh
+export AIRFLOW_HOME="$PWD/airflow"
+airflow connections add conn_postgres \
+  --conn-type postgres --conn-host localhost --conn-port 5000 \
+  --conn-login postgres --conn-password postgres --conn-schema dw
+```
+
+See `AGENTS.md` for full details on configuration and verification.
 
 ### Running dbt
 

@@ -13,6 +13,11 @@ airflow/airflow.db*
 airflow/logs/
 airflow/simple_auth_manager_passwords.json.generated
 
+# dbt
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+
 # OS / editors
 .DS_Store
 *.swp

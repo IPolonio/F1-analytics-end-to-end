@@ -1,0 +1,66 @@
+version: 2
+
+sources:
+  - name: raw
+    description: |
+      Raw OpenF1 API data ingested by Apache Airflow into the `raw` schema.
+      Each table is fully replaced on every DAG run.
+    schema: raw
+    tables:
+      - name: meetings_raw
+        description: >
+          Race weekend metadata from the OpenF1 `/v1/meetings` endpoint
+          (circuit, country, dates, official names).
+        columns:
+          - name: meeting_key
+            description: Unique identifier for a race weekend.
+          - name: circuit_short_name
+            description: Short circuit name.
+          - name: country_code
+            description: ISO country code.
+          - name: country_name
+            description: Country name.
+          - name: date_start
+            description: ISO datetime the weekend starts.
+          - name: gmt_offset
+            description: Timezone offset of the meeting.
+          - name: location
+            description: City/location of the circuit.
+          - name: meeting_name
+            description: Short meeting name.
+          - name: meeting_official_name
+            description: Official meeting name.
+          - name: year
+            description: Championship year.
+          - name: source
+            description: Ingestion source tag.
+          - name: ingestion_time
+            description: Timestamp the row was ingested.
+
+      - name: weather_raw
+        description: >
+          Weather conditions per session from the OpenF1 `/v1/weather` endpoint
+          (air/track temperature, humidity, wind, rainfall).
+        columns:
+          - name: session_key
+            description: Unique identifier of the session the reading belongs to.
+          - name: date
+            description: ISO datetime of the reading.
+          - name: air_temperature
+            description: Air temperature in Celsius.
+          - name: track_temperature
+            description: Track temperature in Celsius.
+          - name: humidity
+            description: Relative humidity in percent.
+          - name: pressure
+            description: Atmospheric pressure in hPa.
+          - name: rainfall
+            description: Rainfall flag (0 or 1).
+          - name: wind_direction
+            description: Wind direction in degrees.
+          - name: wind_speed
+            description: Wind speed in km/h.
+          - name: source
+            description: Ingestion source tag.
+          - name: ingestion_time
+            description: Timestamp the row was ingested.

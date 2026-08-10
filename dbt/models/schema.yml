@@ -1,0 +1,67 @@
+version: 2
+
+models:
+  - name: stg_meetings
+    description: Cleaned and typed race weekend metadata from `raw.meetings_raw`.
+    columns:
+      - name: meeting_key
+        description: Unique identifier for a race weekend.
+        tests:
+          - not_null
+      - name: year
+        tests:
+          - not_null
+
+  - name: stg_weather
+    description: Cleaned and typed per-session weather readings from `raw.weather_raw`.
+    columns:
+      - name: session_key
+        description: Session the reading belongs to.
+        tests:
+          - not_null
+      - name: recorded_at
+        description: Timestamp of the reading.
+        tests:
+          - not_null
+
+  - name: dim_meetings
+    description: >
+      Analytical dimension of race weekends, deduplicated by `meeting_key`
+      with one row per meeting.
+    columns:
+      - name: meeting_key
+        description: Unique identifier for a race weekend.
+        tests:
+          - unique
+          - not_null
+      - name: meeting_name
+        tests:
+          - not_null
+      - name: year
+        tests:
+          - not_null
+
+  - name: fct_weather
+    description: >
+      Analytical fact table of weather readings per session, one row per
+      recorded observation.
+    columns:
+      - name: session_key
+        tests:
+          - not_null
+      - name: recorded_at
+        tests:
+          - not_null
+
+  - name: rpt_weather_by_session
+    description: >
+      Per-session weather summary (averages, min/max temperatures, rainfall
+      share) for analyzing conditions across sessions.
+    columns:
+      - name: session_key
+        tests:
+          - unique
+          - not_null
+      - name: sample_count
+        tests:
+          - not_null
